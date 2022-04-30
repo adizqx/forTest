@@ -1,11 +1,9 @@
 package com.example.fortest.repositories
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.fortest.models.PhoneNumber
 
+@Dao
 interface PhoneNumberDao {
 
     @Query("SELECT * FROM Phones")

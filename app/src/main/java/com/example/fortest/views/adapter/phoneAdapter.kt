@@ -10,23 +10,20 @@ import com.bumptech.glide.Glide
 import com.example.fortest.R
 import com.example.fortest.models.PhoneNumber
 
-class phoneAdapter():RecyclerView.Adapter<phoneAdapter.PhoneViewHolder>() {
-    private val list = arrayListOf<PhoneNumber>()
+class phoneAdapter(var list: List<PhoneNumber>) : RecyclerView.Adapter<phoneAdapter.PhoneViewHolder>() {
 
-    fun setData(list: ArrayList<PhoneNumber>){
-        this.list.clear()
-        this.list.addAll(list)
-        notifyDataSetChanged()
-    }
+    inner class PhoneViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvName = itemView.findViewById<TextView>(R.id.tvName)
+        val tvPhoneNumber = itemView.findViewById<TextView>(R.id.tvPhoneNumber)
+        val photo = itemView.findViewById<ImageView>(R.id.photo)
 
-    class PhoneViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
-        val tvName =  itemView.findViewById<TextView>(R.id.tvName)
-        val tvPhoneNumber =  itemView.findViewById<TextView>(R.id.tvPhoneNumber)
-        val photo =  itemView.findViewById<ImageView>(R.id.photo)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhoneViewHolder {
-        return PhoneViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item,parent,false))
+        return PhoneViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: PhoneViewHolder, position: Int) {
