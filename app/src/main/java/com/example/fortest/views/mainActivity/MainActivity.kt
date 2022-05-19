@@ -1,25 +1,34 @@
 package com.example.fortest.views.mainActivity
 
+import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fortest.R
 import com.example.fortest.databinding.ActivityMainBinding
-import com.example.fortest.models.PhoneNumber
+import com.example.fortest.databinding.AlertItemBinding
+import com.example.fortest.databinding.AlertUpdateBinding
+import com.example.fortest.models.InventoryModel
 import com.example.fortest.presenters.mainActivity.IMainActivityPresenter
 import com.example.fortest.presenters.mainActivity.MainActivityPresenter
-import com.example.fortest.views.adapter.phoneAdapter
+import com.example.fortest.views.adapter.OnItemClicked
+import com.example.fortest.views.adapter.inventoryAdapter
 
 class MainActivity : AppCompatActivity(), IMainActivityView {
 
     lateinit var binding: ActivityMainBinding
     lateinit var presenter: IMainActivityPresenter
-    private var myadapter: phoneAdapter? = null
+    private var myadapter: inventoryAdapter? = null
+
+   private var indexImage = 0
+   private var imageId = R.drawable.antigrip
+   private val imageList = listOf(R.drawable.antigrip,R.drawable.aspirin,R.drawable.cardiomagnil,R.drawable.pikovit,
+        R.drawable.solpadein,R.drawable.alfavit,R.drawable.calcium)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,47 +42,69 @@ class MainActivity : AppCompatActivity(), IMainActivityView {
     }
 
 
-    override fun setRecyclerView(array: List<PhoneNumber>) {
-        myadapter = phoneAdapter(array)
+    override fun setRecyclerView(array: List<InventoryModel>) {
+        myadapter = inventoryAdapter(array as MutableList<InventoryModel>, object : OnItemClicked {
+            override fun onClick(position: Int) {
+                myadapter?.list?.get(position)?.let { presenter.deletetaskFromDatabase(it)
+                 }
+                myadapter?.deleteItem(position)
+            }
+
+            override fun update(item: InventoryModel,position: Int) {
+                showUpdateAlert(item,position)
+            }
+        })
         binding.rcView.adapter = myadapter
     }
 
-    override fun setupListeners() {
+    private fun showUpdateAlert(item: InventoryModel,position:Int) {
+        val customDialog = Dialog(this)
+        val updateBinding = AlertUpdateBinding.inflate(layoutInflater)
+        customDialog.setContentView(updateBinding.root)
+       updateBinding.etName.setText(item.name)
+       updateBinding.etAmount.setText(item.amount)
 
+        updateBinding.btnNextImage.setOnClickListener {
+            indexImage++
+            if (indexImage > imageList.size - 1) indexImage = 0
+            imageId = imageList[indexImage]
+            updateBinding.image.setImageResource(imageId)
+        }
+
+        updateBinding.btnUpdate.setOnClickListener {
+            val updatedInventory = InventoryModel(item.id, updateBinding.etName.text.toString(),
+                updateBinding.etAmount.text.toString(), true, imageId)
+            presenter.updateItemFromDatabase(updatedInventory)
+            myadapter?.updateItem(position)
+            customDialog.dismiss()
+        }
+        customDialog.show()
     }
 
-    override fun addContactButton() {
 
-    }
 
-    override fun adapterItemOnClick() {
+    override fun showAlertDialog() {
+        val addDialog = Dialog(this)
+        val binding = AlertItemBinding.inflate(layoutInflater)
+        addDialog.setContentView(binding.root)
 
-    }
+        binding.btnNextImage.setOnClickListener {
+            indexImage++
+            if (indexImage > imageList.size - 1) indexImage = 0
+            imageId = imageList[indexImage]
+            binding.image.setImageResource(imageId)
+        }
 
-    override fun showAlertDialog(title: String, body: String) {
-        val infl = LayoutInflater.from(this)
-        val view = infl.inflate(R.layout.alert_item, null)
-        val name = view.findViewById<EditText>(R.id.etName)
-        val lname = view.findViewById<EditText>(R.id.etLastName)
-        val btn = view.findViewById<Button>(R.id.btnAdd)
-
-        val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setView(view)
-//        alertDialog.setTitle(title)
-//            .setMessage(body)
-        val dialog = alertDialog.create()
-        dialog.show()
-        btn.setOnClickListener {
-            val contact = PhoneNumber(
-                0,
-                name.text.toString(),
-                lname.text.toString(),
-                "https://source.unsplash.com/random/800x600"
-            )
-            presenter.insert(contact)
+        binding.btnAdd.setOnClickListener {
+            val inventory = InventoryModel(0, binding.etName.text.toString(),
+                binding.etAmount.text.toString(), true, imageId)
+            presenter.insert(inventory)
             presenter.fetch()
-            dialog.dismiss()
+            addDialog.dismiss()
 //            Log.i("asfsafasfas", "${presenter.getAllContats()}")
         }
+        addDialog.show()
+
     }
+
 }

@@ -1,7 +1,6 @@
 package com.example.fortest.presenters.mainActivity
 
-import androidx.lifecycle.MutableLiveData
-import com.example.fortest.models.PhoneNumber
+import com.example.fortest.models.InventoryModel
 import com.example.fortest.repositories.Repository
 import com.example.fortest.views.mainActivity.IMainActivityView
 
@@ -11,24 +10,33 @@ class MainActivityPresenter(val view: IMainActivityView) : IMainActivityPresente
     private val repository = Repository()
 
     init {
-        getAllContats()
+        getAllInventory()
         fetch()
     }
 
-    override fun getAllContats(): List<PhoneNumber> {
-        return repository.getAllContacts()
+    override fun getAllInventory(): List<InventoryModel> {
+        return repository.getAllInventory()
     }
 
     override fun fetch() {
-        view.setRecyclerView(getAllContats())
+        view.setRecyclerView(getAllInventory())
     }
+
+    override fun deletetaskFromDatabase(item: InventoryModel) {
+        repository.deletetaskFromDatabase(item)
+    }
+
+    override fun updateItemFromDatabase(item: InventoryModel) {
+        repository.updateItem(item)
+    }
+
 
     override fun fabOnClick() {
-        view.showAlertDialog("text", "test")
+        view.showAlertDialog()
     }
 
-    override fun insert(phoneNumber: PhoneNumber) {
-        repository.insert(phoneNumber)
+    override fun insert(inventoryModel: InventoryModel) {
+        repository.insert(inventoryModel)
     }
 
 

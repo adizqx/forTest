@@ -4,10 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity("Phones")
-data class PhoneNumber(
+@Entity("Inventory")
+data class InventoryModel(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo("Name") var name: String,
-    @ColumnInfo("PhoneNumber") var phoneNumber: String,
-    @ColumnInfo("Photo") var photo: String?
+    @ColumnInfo("Amount") var amount: String,
+    @ColumnInfo("InStock") var inStock: Boolean?,
+    @ColumnInfo("Photo") var photo: Int?
 )

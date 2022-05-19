@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.fortest.models.PhoneNumber
+import com.example.fortest.models.InventoryModel
 
-@Database(entities = [PhoneNumber::class], version = 1)
+
+@Database(entities = [InventoryModel::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
 //    companion object{
@@ -21,5 +22,5 @@ abstract class AppDatabase : RoomDatabase() {
 //            return instance as AppDatabase
 //        }
 //    }
-    abstract fun PhoneNumberDao(): PhoneNumberDao
+    abstract fun InventoryDao(): InventoryDao
 }
