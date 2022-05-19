@@ -19,6 +19,9 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
-        android:contentDescription="test" />
+        android:contentDescription="test"
+        app:maxImageSize="35dp"
+        app:tint="@android:color/white"
+        />
 
 </FrameLayout>
