@@ -2,7 +2,7 @@ package com.example.fortest
 
 import android.app.Application
 import androidx.room.Room
-import com.example.fortest.repositories.AppDatabase
+import com.example.fortest.db.room.AppDatabase
 
 class App : Application() {
     private var database: AppDatabase? = null
@@ -14,7 +14,7 @@ class App : Application() {
             .allowMainThreadQueries().fallbackToDestructiveMigration().build()
     }
 
-    fun getDb():AppDatabase?{
+    fun getDatabase(): AppDatabase?{
         return database
     }
 
